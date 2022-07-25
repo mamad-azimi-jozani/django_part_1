@@ -35,4 +35,4 @@ class Order(models.Model):
         (PAYMENT_STATUS_COMPLETE, 'COMPLETE'),
         (PAYMENT_STATUS_FAILED, 'FAILED'),
     ]
-    peyment = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
+    payment = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
