@@ -22,4 +22,5 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=12)
     birth_date = models.DateField(auto_now_add=True, null=True)
-    membership = models.CharField(max_length=1, choices=MEMBER_CHOICES, default=MEMBERSHIP_BRONZE)
+    membership = models.CharField(max_length=1, choices=MEMBER_CHOICES,
+                                  default=MEMBERSHIP_BRONZE)
