@@ -6,5 +6,5 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 class LikedItem(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = models.GenericForeignKey()
+    content_object = GenericForeignKey()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
