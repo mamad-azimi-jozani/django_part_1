@@ -46,7 +46,7 @@ class Order(models.Model):
         (PAYMENT_STATUS_COMPLETE, 'COMPLETE'),
         (PAYMENT_STATUS_FAILED, 'FAILED'),
     ]
-    payment = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
+    payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.RESTRICT)
 
 class OrderItem(models.Model):
