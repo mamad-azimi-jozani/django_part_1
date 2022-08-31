@@ -1,10 +1,20 @@
 from django.contrib import admin
 from .models import *
-
+from django.db.models import Count
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['title', 'product_count']
+
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            product_count=Count('product')
+        )
+
+    @admin.display(ordering='product_count')
+    def product_count(self, collection: Collection):
+        return collection.product_count
 
 
 @admin.register(Product)
