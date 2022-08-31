@@ -52,6 +52,9 @@ class Customer(models.Model):
     membership = models.CharField(max_length=1, choices=MEMBER_CHOICES,
                                   default=MEMBERSHIP_BRONZE)
 
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
 class Order(models.Model):
     placed_at = models.DateTimeField(auto_now_add=True)
     PAYMENT_STATUS_PENDING = 'P'
