@@ -7,10 +7,10 @@ class CollectionAdmin(admin.ModelAdmin):
     pass
 
 
-
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['title', 'unit_price']
+    list_editable = ['unit_price']
+    list_per_page = 20
 
 
