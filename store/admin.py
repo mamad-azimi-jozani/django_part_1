@@ -4,6 +4,17 @@ from django.db.models import Count
 from django.utils.html import format_html, urlencode
 from django.urls import reverse
 
+class InventoryFilter(admin.SimpleListFilter):
+    title = 'inventory'
+    parameter_name = 'inventory'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('<10', 'Low')
+        ]
+    def queryset(self, request, queryset):
+        if self.value() == '<10':
+            return queryset.filter(inventory__lt=10)
 
 
 @admin.register(Collection)
@@ -30,8 +41,10 @@ class CollectionAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'unit_price', 'inventory_status', 'collection_field']
+    list_display = ['title', 'unit_price', 'inventory_status', 'collection_field',
+                    ]
     list_editable = ['unit_price']
+    list_filter = ['collection', 'last_update', InventoryFilter]
     list_per_page = 20
     @admin.display(ordering='inventory')
     def inventory_status(self, product):
