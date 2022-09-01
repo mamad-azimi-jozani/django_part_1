@@ -20,6 +20,7 @@ class InventoryFilter(admin.SimpleListFilter):
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
     list_display = ['title', 'product_count']
+    search_fields = ['title']
 
 
     def get_queryset(self, request):
@@ -41,6 +42,8 @@ class CollectionAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['collection']
+    actions = ['clear_inventory']
     list_display = ['title', 'unit_price', 'inventory_status', 'collection_field',
                     ]
     list_editable = ['unit_price']
@@ -54,6 +57,15 @@ class ProductAdmin(admin.ModelAdmin):
 
     def collection_field(self, p: Product):
         return p.collection.id
+
+    @admin.action(description='clear inventory')
+    def clear_inventory(self, request, queryset):
+        updated_count = queryset.update(inventory=0)
+        self.message_user(
+            request,
+            f'{updated_count} were deleted!'
+        )
+
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
