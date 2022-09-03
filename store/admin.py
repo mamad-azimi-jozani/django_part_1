@@ -49,6 +49,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ['unit_price']
     list_filter = ['collection', 'last_update', InventoryFilter]
     list_per_page = 20
+    search_fields = ['product']
     @admin.display(ordering='inventory')
     def inventory_status(self, product):
         if product.inventory < 10:
@@ -74,3 +75,14 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ['first_name__istartswith', 'last_name__istartswith']
     list_per_page = 20
     ordering = ['first_name', 'last_name']
+
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    autocomplete_fields = ['product']
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'placed_at', 'customer']
+    inlines = [OrderItemInline]
+    autocomplete_fields = ['customer']
