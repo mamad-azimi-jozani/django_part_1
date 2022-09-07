@@ -5,6 +5,7 @@ from .serializers import ProductSerializer, CollectionSerializer
 from .models import *
 from rest_framework import status
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 @api_view(['GET', 'POST'])
 def product_list(request):
     if request.method == 'GET':
@@ -48,3 +49,21 @@ def collection_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def collection_detail(request, id):
+    collection = get_object_or_404(Collection.objects.annotate(
+        count_product=Count('product')), id=id)
+    if request.method == 'GET':
+        serializer = CollectionSerializer(collection)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = CollectionSerializer(collection, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+    elif request.method == 'DELETE':
+        serializer = CollectionSerializer(collection)
+        if collection.product_set.count() > 0:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        collection.delete()
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
