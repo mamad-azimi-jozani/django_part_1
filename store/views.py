@@ -16,7 +16,7 @@ def product_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def product_detail(request, id):
     product = Product.objects.get(id=id)
     if request.method == 'GET':
@@ -27,3 +27,8 @@ def product_detail(request, id):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+    elif request.method == 'DELETE':
+        if product.orderitem_set.count() > 0:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
