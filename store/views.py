@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, CollectionSerializer
 from .models import *
 from rest_framework import status
+from django.db.models import Count
 @api_view(['GET', 'POST'])
 def product_list(request):
     if request.method == 'GET':
@@ -32,3 +33,14 @@ def product_detail(request, id):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST'])
+def collection_list(request):
+    if request.method == "GET":
+        queryset = Collection.objects.annotate(
+            count_product=Count('product')
+        )
+        # print(queryset)
+        serializer = CollectionSerializer(queryset, many=True)
+        return Response(serializer.data)
+
