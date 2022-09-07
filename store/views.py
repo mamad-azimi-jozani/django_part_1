@@ -40,7 +40,11 @@ def collection_list(request):
         queryset = Collection.objects.annotate(
             count_product=Count('product')
         )
-        # print(queryset)
         serializer = CollectionSerializer(queryset, many=True)
         return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = CollectionSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
