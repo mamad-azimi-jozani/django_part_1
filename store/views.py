@@ -3,23 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import ProductSerializer, CollectionSerializer
+from rest_framework.generics import ListCreateAPIView
 from .models import *
 from rest_framework import status
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
-
-
-class ProductList(APIView):
-    def get(self, request):
-        queryset = Product.objects.all()
-        serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+class ProductList(ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 class ProductDetail(APIView):
     def get(self, request, id):
@@ -40,6 +31,16 @@ class ProductDetail(APIView):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+class CollectionList(ListCreateAPIView):
+    queryset = Collection.objects.annotate(
+            count_product=Count('product')
+        )
+    serializer_class = CollectionSerializer
+
 
 @api_view(['GET', 'POST'])
 def collection_list(request):
