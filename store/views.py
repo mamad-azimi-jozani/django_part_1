@@ -27,11 +27,12 @@ class CollectionViewSet(ModelViewSet):
         )
     serializer_class = CollectionSerializer
 
-    def delete(self, request, pk):
-        collection = get_object_or_404(Collection, pk=pk)
-        if collection.product_set.count() > 0:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        collection.delete()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if Product.objects.filter(collection__id=instance.id).count() > 0:
+            print(Product.objects.filter(collection__id=instance.id).count())
+            return Response({'error': 'collection can not be deleted'},
+                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
