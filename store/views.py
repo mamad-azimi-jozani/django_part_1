@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import ProductSerializer, CollectionSerializer
+from .serializers import *
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import *
 from rest_framework import status
@@ -35,7 +35,9 @@ class CollectionViewSet(ModelViewSet):
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
-
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
 
 
