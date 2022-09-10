@@ -31,8 +31,8 @@ class CollectionViewSet(ModelViewSet):
         instance = self.get_object()
         if Product.objects.filter(collection__id=instance.id).count() > 0:
             print(Product.objects.filter(collection__id=instance.id).count())
-            return Response({'error': 'collection can not be deleted'},
-                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response({'error': 'product can not be deleted'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        collection.delete()
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
