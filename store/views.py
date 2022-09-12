@@ -1,22 +1,23 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import *
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import *
+from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import ListCreateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ProductFilter
-from rest_framework.filters import SearchFilter, OrderingFilter
+from .serializers import *
+from .models import *
+from .pagination import DefaultPagination
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    pagination_class = DefaultPagination
     filterset_class = ProductFilter
     search_fields = ['title', 'description']
     ordering_fields = ['unit_price']
