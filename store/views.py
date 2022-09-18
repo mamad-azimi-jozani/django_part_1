@@ -3,7 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import mixins
 from rest_framework import status
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
@@ -54,6 +55,7 @@ class ReviewViewSet(ModelViewSet):
         }
 
 
-
-
+class CartViewSet(mixins.CreateModelMixin, GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
 
