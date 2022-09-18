@@ -58,6 +58,6 @@ class ReviewViewSet(ModelViewSet):
 class CartViewSet(mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   GenericViewSet):
-    queryset = Cart.objects.all()
+    queryset = Cart.objects.prefetch_related('items').all()
     serializer_class = CartSerializer
 
