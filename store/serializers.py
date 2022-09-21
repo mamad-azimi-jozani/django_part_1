@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from decimal import Decimal
 from django.db.models import Count
+from django.core.exceptions import ObjectDoesNotExist
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
@@ -53,3 +54,25 @@ class CartSerializer(serializers.ModelSerializer):
         fields = ['id', 'items', 'total_price']
     def get_total_price(self, cart):
         return sum([item.quantity * item.product.unit_price for item in cart.items.all()])
+
+class AddItemSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField()
+
+    def save(self, **kwargs):
+        cart_id = self.context['cart_id']
+        product_id = self.validated_data['product_id']
+        quantity = self.validated_data['quantity']
+
+        try:
+            cart_item = CartItem.objects.get(cart_id=cart_id,
+                                             product_id=product_id)
+            cart_item.quantity += quantity
+            cart_item.save()
+            self.instance = cart_item
+        except ObjectDoesNotExist:
+            self.instance = CartItem.objects.create(cart_id=cart_id, **self.validated_data)
+
+        return self.instance
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product_id', 'quantity']
